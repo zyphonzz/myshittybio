@@ -1,403 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Discord Profile — Themed</title>
-<meta name="color-scheme" content="dark light" />
-<style>
-  :root {
-    --bg: #0b0b0d;
-    --fg: #e8e8ea;
-    --muted: #a9a9ad;
-    --card: #15151a;
-    --card-2: #1b1b22;
-    --acc: #7aa2ff;
-    --ok: #58d38c;
-    --warn: #ffb759;
-    --err: #ff6b6b;
-    --border: #2a2a32;
-    --radius: 18px;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-    --font-ui: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100dvh; background: var(--bg); color: var(--fg);
-    font-family: var(--font-ui); display: grid; place-items: center; padding: 24px;
-  }
-  a { color: inherit; text-decoration: none; }
-  img { display:block; max-width:100%; height:auto; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Bio</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    #app { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
-  /* Layout */
-  .wrap { width: min(100%, 980px); }
-  .bar {
-    display:flex; gap:10px; align-items:center; justify-content:space-between;
-    margin-bottom:16px;
-  }
-  .crumbs { font-size:12px; color:var(--muted); }
-  .crumbs b { color: var(--fg); }
-  .tools { display:flex; gap:8px; align-items:center; }
-  .tools input, .tools select, .tools button {
-    background: var(--card); color: var(--fg); border:1px solid var(--border);
-    padding:10px 12px; border-radius:12px; outline: none;
-  }
-  .tools button { cursor:pointer; }
-  .card {
-    border:1px solid var(--border); background: var(--card);
-    border-radius: var(--radius); box-shadow: var(--shadow); overflow: clip;
-  }
-  .hero {
-    position:relative; height: 200px; background:
-      radial-gradient(1200px 600px at 10% -20%, #334 0%, transparent 60%),
-      radial-gradient(900px 600px at 100% 0%, #223 0%, transparent 55%),
-      linear-gradient(180deg, #232334, #16161d);
-  }
-  .bannerImg { position:absolute; inset:0; object-fit: cover; width:100%; height:100%; opacity:.6; }
-  .pfp {
-    position:absolute; bottom:-50px; left:24px; width:112px; height:112px; border-radius:26px;
-    background: #111; border:3px solid rgba(255,255,255,.08); overflow:hidden; box-shadow: var(--shadow);
-  }
-  .badge {
-    position:absolute; right:10px; bottom:10px; background: var(--ok); color:#08130d;
-    padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px;
-    border: 1px solid rgba(0,0,0,.2);
-  }
-  .content { padding: 72px 24px 24px; display:grid; grid-template-columns: 1fr; gap:16px; }
-  .row { display:flex; gap:16px; flex-wrap:wrap; }
-  .section {
-    background: var(--card-2); border:1px solid var(--border); border-radius:14px; padding:16px; flex:1 1 260px;
-  }
-  .title { font-size:24px; font-weight:800; line-height:1.1; }
-  .muted { color: var(--muted); }
-  .mono { font-family: var(--font-mono); }
-  .kv { display:grid; grid-template-columns: 140px 1fr; gap:8px 12px; font-size:14px; }
-  .kv div:nth-child(odd) { color: var(--muted); }
-  .links { display:flex; gap:10px; flex-wrap:wrap; }
-  .chip { border:1px solid var(--border); background:transparent; padding:8px 12px; border-radius:999px; font-size:13px; }
-  .err { color: var(--err); }
-  .warn { color: var(--warn); }
+    /* Default modern style */
+    body.default { background: #111; color: #fff; }
+    .card { background: #222; padding: 2rem; border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.4); text-align: center; max-width: 400px; }
+    .avatar { width: 96px; height: 96px; border-radius: 50%; margin-bottom: 1rem; }
 
-  /* THEMES --------------------------------------------------------------- */
+    /* GeoCities */
+    body.geo { background: url('https://www.transparenttextures.com/patterns/stardust.png'), #000; color: #0ff; font-family: "Comic Sans MS", cursive, sans-serif; }
+    body.geo .card { background: none; border: 3px ridge magenta; color: yellow; box-shadow: none; text-shadow: 2px 2px #f0f; }
 
-  /* MODERN: minimal, sleek */
-  .theme-modern :root {}
-  .theme-modern .card { backdrop-filter: none; }
+    /* Aero */
+    body.aero { background: url('https://i.imgur.com/r1bI6Rw.jpg') center/cover no-repeat fixed; color: #fff; }
+    body.aero .card { backdrop-filter: blur(20px); background: rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
 
-  /* GEO: Geocities throwback */
-  .theme-geo body { background: #000 url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') repeat; color:#fff; }
-  .theme-geo .card { background: #0a0a0a; border: 3px double #33ff33; }
-  .theme-geo .hero { background: repeating-linear-gradient(45deg, #0a400a 0 6px, #092909 6px 12px), #000; }
-  .theme-geo .badge { background: #33ff33; color:#001b00; border-color:#005500; }
-  .theme-geo .title { font-family: "Comic Sans MS", "Trebuchet MS", var(--font-ui); text-shadow: 1px 1px 0 #000, 0 0 6px #33ff33; }
-  .theme-geo .tools input, .theme-geo .tools select, .theme-geo .tools button { border-radius: 4px; border-color:#33ff33; }
-  .theme-geo .chip { border-color:#33ff33; }
+    /* Metro */
+    body.metro { background: #0078D7; color: #fff; font-family: "Segoe UI", sans-serif; }
+    body.metro .card { background: #fff; color: #111; border-radius: 0; box-shadow: none; text-align: left; }
 
-  /* AERO: Windows 7/Vista glass */
-  .theme-aero body { background: radial-gradient(1200px 500px at 20% -10%, rgba(120,180,255,.25), transparent 55%), linear-gradient(180deg, #0e1015, #0a0c10); }
-  .theme-aero .card { background: rgba(18,22,30,.55); border:1px solid rgba(255,255,255,.12); backdrop-filter: blur(18px) saturate(140%); }
-  .theme-aero .hero { background: radial-gradient(800px 300px at 10% 0%, rgba(160,210,255,.45), transparent 60%), linear-gradient(180deg, #1a2230, #0e131a); }
-  .theme-aero .pfp { border-radius: 20px; }
-  .theme-aero .title { text-shadow: 0 1px 0 rgba(255,255,255,.08), 0 12px 30px rgba(0,0,0,.6); }
+    /* Guns.lol imitation */
+    body.guns { background: #0d0d0d; color: #fff; font-family: Arial, sans-serif; }
+    body.guns .card { background: #111; border: 2px solid #333; padding: 2rem; border-radius: 12px; text-align: left; }
 
-  /* METRO: Frutiger Metro (flat, blocks) */
-  .theme-metro body { background: #0b0b0d; }
-  .theme-metro .card { border-radius: 0; box-shadow: none; }
-  .theme-metro .section { border-radius: 0; }
-  .theme-metro .hero { background: linear-gradient(120deg, #0078d4 0%, #005a9e 70%); }
-  .theme-metro .badge { background: #ffb900; color:#2a1f00; }
-
-  /* 101: code-first */
-  .theme-101 body { background:#0b0c10; color:#e6e6e6; }
-  .theme-101 .card, .theme-101 .section { background:#0e1117; border-color:#1f2430; }
-  .theme-101 .title { font-family: var(--font-mono); }
-  .theme-101 .mono { font-size: 13px; }
-  .theme-101 .hero { background: linear-gradient(180deg, #0e1117, #0b0d12); }
-
-  /* GUNS: stark, bio-card vibe */
-  .theme-guns body { background:#fff; color:#111; }
-  .theme-guns .card, .theme-guns .section { background:#fff; border-color:#111; box-shadow: none; }
-  .theme-guns .hero { background:#111; }
-  .theme-guns .badge { background:#111; color:#fff; }
-  .theme-guns .tools input, .theme-guns .tools select, .theme-guns .tools button {
-    background:#fff; color:#111; border:1px solid #111;
-  }
-  .theme-guns .chip { border-color:#111; }
-
-  @media (max-width:600px){
-    .kv { grid-template-columns: 110px 1fr; }
-    .pfp { left: 16px; width:96px; height:96px; bottom:-44px; border-radius: 18px; }
-    .content { padding: 64px 16px 16px; }
-  }
-</style>
+    /* 101 (code/terminal) */
+    body.code101 { background: #000; color: #0f0; font-family: monospace; }
+    body.code101 .card { background: none; border: none; box-shadow: none; text-align: left; }
+  </style>
 </head>
 <body>
-<div class="wrap" id="app">
-  <div class="bar">
-    <div class="crumbs">
-      Path: <b id="crumbPath"></b> · Style: <b id="crumbStyle"></b> · ID: <b id="crumbId"></b>
-    </div>
-    <div class="tools">
-      <select id="styleSel" title="Switch theme">
-        <option value="modern">modern</option>
-        <option value="geo">geo</option>
-        <option value="aero">aero</option>
-        <option value="metro">metro</option>
-        <option value="101">101</option>
-        <option value="guns">guns</option>
-      </select>
-      <input id="idInput" placeholder="Discord ID (e.g., 123456789012345678)" inputmode="numeric" />
-      <button id="goBtn">Open</button>
-    </div>
-  </div>
+  <div id="app"><p>Loading profile...</p></div>
 
-  <div class="card">
-    <div class="hero">
-      <img class="bannerImg" id="bannerImg" alt="">
-      <div class="pfp"><img id="pfpImg" alt="avatar"></div>
-      <div class="badge" id="presenceBadge" hidden>offline</div>
-    </div>
-
-    <div class="content">
-      <div class="row">
-        <div class="section" style="flex:2 1 380px">
-          <div class="title" id="displayName">Unknown User</div>
-          <div class="muted" id="username">@unknown</div>
-          <p class="muted" id="bio">No bio available. Enable Lanyard or configure a proxy to load more profile data.</p>
-          <div class="links" id="links"></div>
-        </div>
-        <div class="section" style="flex:1 1 260px">
-          <div class="kv mono">
-            <div>ID</div><div id="kvId">—</div>
-            <div>Status</div><div id="kvStatus">unknown</div>
-            <div>Source</div><div id="kvSource">none</div>
-            <div>Avatar</div><div id="kvAvatar">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section mono" id="debugBox" style="display:none; white-space: pre-wrap;"></div>
-      <div class="section" id="hintBox">
-        <b>Heads up</b>: the public Discord API needs a token. This page will:
-        <ol>
-          <li>Try <code>https://api.lanyard.rest/v1/users/{id}</code> (works only if the user opted in).</li>
-          <li>Optionally call your proxy: set <code>PROXY_URL</code> (below) that forwards to Discord with your bot token server-side.</li>
-        </ol>
-        <details>
-          <summary>Configure a simple Cloudflare Worker proxy (example)</summary>
-          <pre class="mono" style="font-size:12px; overflow:auto; padding:12px; border:1px solid var(--border); border-radius:10px;">
-export default {
-  async fetch(req, env) {
-    const url = new URL(req.url);
-    const m = url.pathname.match(/^\/users\/(\d{17,20})$/);
-    if (!m) return new Response("Bad path", { status: 400 });
-    const userId = m[1];
-    const resp = await fetch(`https://discord.com/api/v10/users/${userId}`, {
-      headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` }
-    });
-    return new Response(resp.body, {
-      status: resp.status,
-      headers: { "content-type": "application/json", "cache-control": "public, max-age=300" }
-    });
-  }
-}
-          </pre>
-          <div class="mono" style="font-size:12px;">Set KV/Secrets: <code>DISCORD_BOT_TOKEN</code>. Then set PROXY_URL (below) to your worker base URL.</div>
-        </details>
-      </div>
-
-      <div class="section">
-        <label class="mono" style="display:block; margin-bottom:6px;">PROXY_URL (optional)</label>
-        <input id="proxyInput" placeholder="https://your-worker.example.com" style="width:100%; background:var(--card); color:var(--fg); border:1px solid var(--border); padding:10px 12px; border-radius:12px;" />
-        <div class="muted mono" style="margin-top:6px;">Tip: you can also pass <code>?proxy=https://your-worker.example.com</code> in the URL.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-(() => {
-  // ---- Router: expect /{style}/{id}
-  const pathParts = location.pathname.replace(/^\/+/, "").split("/");
-  const style = decodeURIComponent(pathParts[0] || "modern").toLowerCase();
-  const id = (pathParts[1] || "").replace(/\D+/g, ""); // keep digits
-  const qs = new URLSearchParams(location.search);
-  const proxyFromQS = qs.get("proxy") || "";
-
-  document.getElementById("crumbPath").textContent = "/" + pathParts.join("/");
-  document.getElementById("crumbStyle").textContent = style || "—";
-  document.getElementById("crumbId").textContent = id || "—";
-
-  // Set theme class on <html>
-  const themeClass = "theme-" + (["modern","geo","aero","metro","101","guns"].includes(style) ? style : "modern");
-  document.documentElement.classList.add(themeClass);
-
-  // Bind toolbar
-  const styleSel = document.getElementById("styleSel");
-  const idInput = document.getElementById("idInput");
-  const goBtn = document.getElementById("goBtn");
-  const proxyInput = document.getElementById("proxyInput");
-
-  styleSel.value = (["modern","geo","aero","metro","101","guns"].includes(style) ? style : "modern");
-  idInput.value = id;
-  proxyInput.value = proxyFromQS;
-
-  goBtn.addEventListener("click", () => {
-    const s = styleSel.value || "modern";
-    const i = (idInput.value || "").replace(/\D+/g,"");
-    const p = proxyInput.value.trim();
-    const url = new URL(location.href);
-    if (p) url.searchParams.set("proxy", p); else url.searchParams.delete("proxy");
-    location.href = `${url.origin}/${encodeURIComponent(s)}/${i}${url.search}`;
-  });
-
-  // DOM refs
-  const nameEl = document.getElementById("displayName");
-  const userEl = document.getElementById("username");
-  const bioEl = document.getElementById("bio");
-  const idEl = document.getElementById("kvId");
-  const statusEl = document.getElementById("kvStatus");
-  const srcEl = document.getElementById("kvSource");
-  const avatarEl = document.getElementById("kvAvatar");
-  const pfpImg = document.getElementById("pfpImg");
-  const bannerImg = document.getElementById("bannerImg");
-  const presenceBadge = document.getElementById("presenceBadge");
-  const debugBox = document.getElementById("debugBox");
-  const hintBox = document.getElementById("hintBox");
-  const links = document.getElementById("links");
-
-  // Helpers
-  const cdnAvatar = (uid, hash) =>
-    hash ? `https://cdn.discordapp.com/avatars/${uid}/${hash}.${hash.startsWith("a_") ? "gif" : "png"}?size=512`
-         : `https://cdn.discordapp.com/embed/avatars/${(+uid % 5)}.png`;
-
-  function setPresence(p) {
-    const map = { online: "online", idle:"idle", dnd:"do not disturb", offline:"offline" };
-    const label = map[p] || "unknown";
-    presenceBadge.textContent = label;
-    presenceBadge.hidden = false;
-    statusEl.textContent = label;
-  }
-
-  function setImages(uid, avatarHash, bannerUrl=null) {
-    const a = cdnAvatar(uid, avatarHash);
-    pfpImg.src = a;
-    pfpImg.alt = "avatar";
-    avatarEl.textContent = a;
-    bannerImg.src = bannerUrl || "";
-    bannerImg.alt = bannerUrl ? "banner" : "";
-  }
-
-  function addLink(label, href) {
-    const el = document.createElement("a");
-    el.href = href; el.target="_blank"; el.rel="noopener noreferrer"; el.className="chip";
-    el.textContent = label;
-    links.appendChild(el);
-  }
-
-  function showDebug(obj) {
-    debugBox.style.display = "block";
-    debugBox.textContent = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
-  }
-
-  // Fetchers
-  async function fetchFromLanyard(uid) {
-    const url = `https://api.lanyard.rest/v1/users/${uid}`;
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) throw new Error("Lanyard failed: " + r.status);
-    const j = await r.json();
-    if (!j?.success || !j?.data) throw new Error("Lanyard: no data");
-    const d = j.data;
-    const du = d.discord_user || {};
-    return {
-      source: "lanyard",
-      id: uid,
-      username: du.username || null,
-      global_name: du.global_name || null,
-      avatar: du.avatar || null,
-      // Presence
-      presence: d.discord_status || (d.active_on_discord_desktop || d.active_on_discord_mobile ? "online" : "offline"),
-      // Extras
-      bio: d.kv?.bio || "", // optional custom kv some users set
-      bannerURL: null, // Lanyard doesn't expose banner; leave null
-      raw: j
-    };
-  }
-
-  async function fetchFromProxy(uid, base) {
-    if (!base) throw new Error("No proxy configured");
-    const clean = base.replace(/\/+$/,"");
-    const url = `${clean}/users/${uid}`;
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) throw new Error("Proxy failed: " + r.status);
-    const j = await r.json();
-    // Discord /users/{id}
-    return {
-      source: "proxy",
-      id: uid,
-      username: j.username || null,
-      global_name: j.global_name || null,
-      avatar: j.avatar || null,
-      bio: j.bio || "",          // available via /profile, not /users; many proxies add it—may be empty
-      bannerURL: j.banner ? `https://cdn.discordapp.com/banners/${uid}/${j.banner}.${j.banner.startsWith("a_") ? "gif" : "png"}?size=1024` : null,
-      presence: "unknown",
-      raw: j
-    };
-  }
-
-  async function load(uid) {
-    if (!uid) return;
-    idEl.textContent = uid;
-    nameEl.textContent = "Loading…";
-    userEl.textContent = "@loading";
-    setImages(uid, null);
-    srcEl.textContent = "pending";
-    hintBox.style.display = "none";
-    links.innerHTML = "";
-
-    try {
-      let data = null;
+  <script>
+    async function getUser(idOrName) {
+      // Try Lanyard first
       try {
-        data = await fetchFromLanyard(uid);
-      } catch (e) {
-        // ignore, fall back to proxy
-      }
-      if (!data && proxyFromQS) {
-        data = await fetchFromProxy(uid, proxyFromQS);
-      }
-      if (!data) {
-        throw new Error("No data sources succeeded. Either enable Lanyard for that user or configure a proxy.");
-      }
+        const lanyard = await fetch(`https://api.lanyard.rest/v1/users/${idOrName}`);
+        if (lanyard.ok) return (await lanyard.json()).data.discord_user;
+      } catch {}
 
-      srcEl.textContent = data.source;
-      nameEl.textContent = data.global_name || data.username || "Unknown User";
-      userEl.textContent = data.username ? "@" + data.username : "@unknown";
-      bioEl.textContent = data.bio || (data.source === "lanyard" ? "Lanyard did not provide a bio." : "No bio provided.");
-      setImages(uid, data.avatar, data.bannerURL);
-      if (data.presence) setPresence(data.presence);
+      // Fallback: DiscordLookup
+      try {
+        const res = await fetch(`https://discordlookup.mesavirep.xyz/v1/user/${idOrName}`);
+        if (res.ok) return (await res.json()).user;
+      } catch {}
 
-      // Useful links
-      addLink("Open in Discord", `https://discord.com/users/${uid}`);
-      addLink("Avatar", pfpImg.src);
-      if (data.bannerURL) addLink("Banner", data.bannerURL);
-      addLink("Snowflake lookup", `https://snowsta.mp/${uid}`);
-
-      // Optional: show debug dump (uncomment for dev)
-      // showDebug(data.raw);
-
-    } catch (err) {
-      nameEl.textContent = "Couldn’t load user";
-      userEl.textContent = "@unknown";
-      bioEl.innerHTML = `<span class="err">${err.message}</span>`;
-      srcEl.textContent = "error";
-      hintBox.style.display = "block";
-      showDebug(String(err));
+      return null;
     }
-  }
 
-  if (id) load(id);
-})();
-</script>
+    async function main() {
+      const path = window.location.pathname.split("/").filter(Boolean);
+      const theme = path[0] || "default";
+      const user = path[1];
+      document.body.className = theme === "101" ? "code101" : theme;
+
+      if (!user) {
+        document.getElementById("app").innerHTML = `<p>No user provided.</p>`;
+        return;
+      }
+
+      const data = await getUser(user);
+      if (!data) {
+        document.getElementById("app").innerHTML = `<p>Could not fetch profile for ${user}</p>`;
+        return;
+      }
+
+      const avatar = data.avatar
+        ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
+        : `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+      document.getElementById("app").innerHTML = `
+        <div class="card">
+          <img class="avatar" src="${avatar}" alt="avatar">
+          <h2>${data.username}${data.discriminator !== "0" ? "#" + data.discriminator : ""}</h2>
+          ${data.global_name ? `<p>${data.global_name}</p>` : ""}
+        </div>
+      `;
+    }
+
+    main();
+  </script>
 </body>
 </html>

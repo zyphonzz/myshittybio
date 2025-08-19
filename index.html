@@ -1,90 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Discord Bio</title>
+  <meta name="color-scheme" content="dark light" />
   <style>
-    body { margin: 0; font-family: sans-serif; }
-    #app { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    :root{
+      --radius-lg:24px; --radius-md:16px; --radius-sm:10px;
+      --shadow-1: 0 10px 40px rgba(0,0,0,.35);
+      --shadow-2: 0 3px 10px rgba(0,0,0,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;}
+    a{color:inherit; text-decoration:none}
+    img{display:block; max-width:100%;}
 
-    /* Default modern style */
-    body.default { background: #111; color: #fff; }
-    .card { background: #222; padding: 2rem; border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.4); text-align: center; max-width: 400px; }
-    .avatar { width: 96px; height: 96px; border-radius: 50%; margin-bottom: 1rem; }
+    /* ====== SHARED LAYOUT ====== */
+    .page{min-height:100dvh; position:relative; display:grid; place-items:center; padding:20px}
+    .hero{position:fixed; inset:0; z-index:-1;}
+    .hero::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.5));}
+    .wrap{width:min(100%, 920px)}
+    .card{background:#15151a; color:#fff; border-radius:var(--radius-lg); border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow-1); overflow:hidden}
+    .card-body{padding:28px 26px}
 
-    /* GeoCities */
-    body.geo { background: url('https://www.transparenttextures.com/patterns/stardust.png'), #000; color: #0ff; font-family: "Comic Sans MS", cursive, sans-serif; }
-    body.geo .card { background: none; border: 3px ridge magenta; color: yellow; box-shadow: none; text-shadow: 2px 2px #f0f; }
+    .profile{display:grid; gap:16px; place-items:center; text-align:center}
+    .pfp{width:112px; height:112px; border-radius:28px; overflow:hidden; border:3px solid rgba(255,255,255,.15); box-shadow:var(--shadow-2)}
+    .name{font-size:36px; font-weight:800; line-height:1.1}
+    .handle{color:#cfd1d6; font-size:14px}
+    .about{margin-top:6px; color:#dfe2ea; opacity:.9; max-width:46ch}
 
-    /* Aero */
-    body.aero { background: url('https://i.imgur.com/r1bI6Rw.jpg') center/cover no-repeat fixed; color: #fff; }
-    body.aero .card { backdrop-filter: blur(20px); background: rgba(255,255,255,.1); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+    .presence{margin-top:14px; background:#1a1b22; border:1px solid rgba(255,255,255,.08); padding:12px 14px; border-radius:16px; display:flex; align-items:center; gap:12px}
+    .dot{width:10px; height:10px; border-radius:999px}
+    .dot.online{background:#58d38c} .dot.idle{background:#ffb959} .dot.dnd{background:#ff6469} .dot.offline{background:#8a8f98}
 
-    /* Metro */
-    body.metro { background: #0078D7; color: #fff; font-family: "Segoe UI", sans-serif; }
-    body.metro .card { background: #fff; color: #111; border-radius: 0; box-shadow: none; text-align: left; }
+    .links{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; justify-content:center}
+    .chip{border:1px solid rgba(255,255,255,.14); padding:10px 14px; border-radius:999px; font-weight:600; background:transparent}
 
-    /* Guns.lol imitation */
-    body.guns { background: #0d0d0d; color: #fff; font-family: Arial, sans-serif; }
-    body.guns .card { background: #111; border: 2px solid #333; padding: 2rem; border-radius: 12px; text-align: left; }
+    .footer{display:flex; justify-content:space-between; align-items:center; color:rgba(255,255,255,.6); font-size:12px; padding:14px 18px}
+
+    /* ====== THEMES ====== */
+
+    /* MODERN (default) */
+    .t-modern{background: radial-gradient(1200px 600px at 20% -10%, #2b3350 0%, transparent 60%), linear-gradient(180deg, #0e1015, #090b10);}    
+    .t-modern .card{background: rgba(18,22,30,.7); backdrop-filter: blur(14px) saturate(140%)}
+
+    /* GUNS (guns.lol inspired): stark white card on dark bg, big spacing, clean icons */
+    .t-guns{background:#0b0b0d; color:#111}
+    .t-guns .card{background:#fff; color:#111; border:1px solid #111; border-radius:22px; box-shadow:none}
+    .t-guns .pfp{border-radius:28px; border:2px solid #111}
+    .t-guns .presence{background:#111; color:#fff; border-color:#111}
+    .t-guns .chip{border-color:#111}
+    .t-guns .footer{color:#333}
+
+    /* AERO (Win7/Vista) */
+    .t-aero{background: radial-gradient(1200px 480px at 12% -6%, rgba(160,210,255,.25), transparent 60%), linear-gradient(180deg, #0e131a, #091017)}
+    .t-aero .card{background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25); backdrop-filter: blur(22px) saturate(160%)}
+    .t-aero .name{text-shadow:0 1px 0 rgba(255,255,255,.2), 0 14px 30px rgba(0,0,0,.6)}
+    .t-aero .chip{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.3)}
+
+    /* METRO */
+    .t-metro{background:#0078D4}
+    .t-metro .card{background:#fff; color:#111; border-radius:0; box-shadow:none}
+    .t-metro .name{font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif; font-weight:700}
+    .t-metro .presence{background:#f3f3f3; border-color:#e5e5e5; color:#111}
+    .t-metro .chip{border-color:#e5e5e5}
 
     /* 101 (code/terminal) */
-    body.code101 { background: #000; color: #0f0; font-family: monospace; }
-    body.code101 .card { background: none; border: none; box-shadow: none; text-align: left; }
+    .t-101{background:#000; color:#0f0}
+    .t-101 .card{background:#000; color:#0f0; border:1px solid #0f0; box-shadow:none}
+    .t-101 .name{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+    .t-101 .presence{background:#010; border-color:#0f0}
+    .t-101 .chip{border-color:#0f0}
+
+    /* GEO (Geocities 1999) */
+    .t-geo{cursor:url('data:image/gif;base64,R0lGODlhEAAQAPAAAP///wAAACH5BAAAAAAALAAAAAAQABAAAAIjjI+py+0Po5yUFQA7'), auto;}
+    .t-geo .hero{background: url('data:image/gif;base64,R0lGODlhAQABAIAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==') repeat, #000}
+    .t-geo{background:#000 url('https://assets.digital-archiv.es/tiles/stars-tile.gif') repeat}
+    .t-geo .card{background:rgba(0,0,0,.75); border:5px ridge #f0f; color:#ff0; text-shadow:1px 1px 0 #000, 0 0 6px #0ff}
+    .t-geo .name{font-family: "Comic Sans MS", "Trebuchet MS", system-ui; letter-spacing:.5px}
+    .t-geo .presence{background:rgba(0,0,0,.6); border-color:#0ff}
+    .t-geo .chip{border-color:#0ff}
+    .blink{animation:blink 1s steps(2, start) infinite}
+    @keyframes blink{to{visibility:hidden}}
+    .rainbow-hr{height:6px; border:0; background:linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet)}
+    .counter{font-family:monospace; background:#000; color:#0f0; padding:6px 10px; border:2px inset #0f0; display:inline-block}
+
+    @media (max-width:600px){
+      .card-body{padding:22px 18px}
+      .pfp{width:96px; height:96px; border-radius:22px}
+      .name{font-size:28px}
+    }
   </style>
 </head>
 <body>
-  <div id="app"><p>Loading profile...</p></div>
+  <main id="root" class="page t-modern">
+    <div class="hero" id="hero"></div>
+    <div class="wrap">
+      <section class="card" id="card">
+        <div class="card-body profile">
+          <div class="pfp"><img id="pfp" alt="avatar" /></div>
+          <div class="name" id="name">Loading…</div>
+          <div class="handle" id="handle"></div>
+          <p class="about" id="about"></p>
+          <div class="presence" id="presence" style="display:none">
+            <span class="dot" id="presenceDot"></span>
+            <span id="presenceText">offline</span>
+          </div>
+          <div class="links" id="links"></div>
+        </div>
+        <div class="footer">
+          <div id="viewCounter" class="counter" style="display:none"></div>
+          <div id="footerRight"></div>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <script>
-    async function getUser(idOrName) {
-      // Try Lanyard first
-      try {
-        const lanyard = await fetch(`https://api.lanyard.rest/v1/users/${idOrName}`);
-        if (lanyard.ok) return (await lanyard.json()).data.discord_user;
-      } catch {}
+  (async () => {
+    const THEMES = new Set(["modern","geo","aero","metro","101","guns"]);
+    const parts = location.pathname.replace(/^\/+/, '').split('/');
+    const style = (parts[0] || 'modern').toLowerCase();
+    const input = decodeURIComponent(parts[1] || '').trim();
 
-      // Fallback: DiscordLookup
-      try {
-        const res = await fetch(`https://discordlookup.mesavirep.xyz/v1/user/${idOrName}`);
-        if (res.ok) return (await res.json()).user;
-      } catch {}
+    // apply theme
+    const rootEl = document.getElementById('root');
+    rootEl.className = 'page t-' + (THEMES.has(style) ? style : 'modern');
 
-      return null;
+    // helper: build CDN avatar from id + hash
+    const cdnAvatar = (id, hash, size=512) => hash
+      ? `https://cdn.discordapp.com/avatars/${id}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=${size}`
+      : (id ? `https://cdn.discordapp.com/embed/avatars/${(+id % 5)}.png` : `https://unavatar.io/discord/${encodeURIComponent(input)}`);
+
+    const setText = (id, text) => { const el=document.getElementById(id); if (el) el.textContent=text||''; }
+    const hide = id => { const el=document.getElementById(id); if (el) el.style.display='none'; }
+    const show = id => { const el=document.getElementById(id); if (el) el.style.display=''; }
+
+    function presenceClass(p){ return ({online:'online', idle:'idle', dnd:'dnd', offline:'offline'})[p] || 'offline'; }
+
+    async function fetchJSON(u){ const r = await fetch(u, {cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.json(); }
+
+    const isId = /^\d{17,20}$/.test(input);
+
+    let profile = { id: isId ? input : null, username: null, global_name: null, avatar: null, banner: null, about: '', presence: null };
+
+    // 1) If ID: try JAPI (no token) for core fields
+    if (isId) {
+      try {
+        const j = await fetchJSON(`https://japi.rest/discord/v1/user/${input}`);
+        if (j && j.data) {
+          profile.id = j.data.id;
+          profile.username = j.data.username || null;
+          profile.global_name = j.data.global_name || null;
+          profile.avatar = j.data.avatar || null;
+          profile.banner = j.data.banner || null;
+          profile.accent_color = j.data.accent_color || null;
+        }
+      } catch (e) { /* ignore */ }
+
+      // 1b) Presence via Lanyard (if opted in)
+      try {
+        const l = await fetchJSON(`https://api.lanyard.rest/v1/users/${input}`);
+        if (l && l.success && l.data) {
+          profile.presence = l.data.discord_status || (l.data.active_on_discord_desktop || l.data.active_on_discord_mobile ? 'online' : 'offline');
+          if (!profile.username && l.data.discord_user) profile.username = l.data.discord_user.username;
+          if (!profile.global_name && l.data.discord_user) profile.global_name = l.data.discord_user.global_name;
+          if (!profile.avatar && l.data.discord_user) profile.avatar = l.data.discord_user.avatar;
+          if (!profile.about && l.data.kv && typeof l.data.kv.bio === 'string') profile.about = l.data.kv.bio;
+        }
+      } catch (e) { /* ignore */ }
     }
 
-    async function main() {
-      const path = window.location.pathname.split("/").filter(Boolean);
-      const theme = path[0] || "default";
-      const user = path[1];
-      document.body.className = theme === "101" ? "code101" : theme;
-
-      if (!user) {
-        document.getElementById("app").innerHTML = `<p>No user provided.</p>`;
-        return;
-      }
-
-      const data = await getUser(user);
-      if (!data) {
-        document.getElementById("app").innerHTML = `<p>Could not fetch profile for ${user}</p>`;
-        return;
-      }
-
-      const avatar = data.avatar
-        ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
-        : `https://cdn.discordapp.com/embed/avatars/0.png`;
-
-      document.getElementById("app").innerHTML = `
-        <div class="card">
-          <img class="avatar" src="${avatar}" alt="avatar">
-          <h2>${data.username}${data.discriminator !== "0" ? "#" + data.discriminator : ""}</h2>
-          ${data.global_name ? `<p>${data.global_name}</p>` : ""}
-        </div>
-      `;
+    // 2) If not ID: do best-effort username mode
+    if (!isId) {
+      profile.username = input;
+      // Try to resolve with discordlookup (some usernames may resolve)
+      try {
+        const lk = await fetchJSON(`https://discordlookup.mesavirep.xyz/v1/user/${encodeURIComponent(input)}`);
+        if (lk && (lk.id || (lk.user && lk.user.id))) {
+          const id = lk.id || lk.user.id;
+          profile.id = id;
+          // now pull details from JAPI
+          const j = await fetchJSON(`https://japi.rest/discord/v1/user/${id}`);
+          if (j && j.data) {
+            profile.username = j.data.username || profile.username;
+            profile.global_name = j.data.global_name || null;
+            profile.avatar = j.data.avatar || null;
+            profile.banner = j.data.banner || null;
+            profile.accent_color = j.data.accent_color || null;
+          }
+          // presence via lanyard
+          try {
+            const l = await fetchJSON(`https://api.lanyard.rest/v1/users/${id}`);
+            if (l && l.success && l.data) profile.presence = l.data.discord_status || null;
+          } catch {}
+        }
+      } catch (e) { /* ignore */ }
     }
 
-    main();
+    // Finalize visuals
+    const name = profile.global_name || profile.username || (profile.id ? `user_${profile.id.slice(-4)}` : input || 'Unknown');
+    document.title = name + ' — profile';
+
+    // Hero styling tweaks
+    if (profile.banner) {
+      const ext = profile.banner.startsWith('a_') ? 'gif' : 'png';
+      document.getElementById('hero').style.background = `url(https://cdn.discordapp.com/banners/${profile.id}/${profile.banner}.${ext}?size=1024) center/cover no-repeat fixed`;
+    }
+
+    // Inject basics
+    document.getElementById('pfp').src = cdnAvatar(profile.id, profile.avatar);
+    document.getElementById('pfp').alt = name + ' avatar';
+    setText('name', name);
+    setText('handle', profile.username ? '@' + profile.username : (profile.id ? '('+profile.id+')' : ''));
+
+    // About text (never show setup info)
+    const about = profile.about || '';
+    if (about) setText('about', about); else hide('about');
+
+    // Presence
+    if (profile.presence) {
+      const dot = document.getElementById('presenceDot');
+      dot.classList.add(presenceClass(profile.presence));
+      setText('presenceText', profile.presence);
+      show('presence');
+    }
+
+    // Links: Discord profile if we have an ID; otherwise avatar link only
+    const links = document.getElementById('links');
+    function addChip(label, href){ const a=document.createElement('a'); a.className='chip'; a.href=href; a.target='_blank'; a.rel='noopener'; a.textContent=label; links.appendChild(a); }
+    if (profile.id) addChip('Open in Discord', `https://discord.com/users/${profile.id}`);
+    addChip('Avatar', cdnAvatar(profile.id, profile.avatar));
+
+    // Geo extras
+    if (style === 'geo') {
+      const footerRight = document.getElementById('footerRight');
+      footerRight.innerHTML = '<span class="blink">WELCOME TO MY HOME PAGE!!!</span>';
+      const vc = document.getElementById('viewCounter');
+      vc.textContent = 'Visitor Count: ' + (Math.floor(Math.random()*90000)+10000);
+      vc.style.display = '';
+      const card = document.getElementById('card');
+      const hr = document.createElement('div'); hr.className='rainbow-hr';
+      card.insertBefore(hr, card.children[1]);
+    }
+  })();
   </script>
 </body>
 </html>

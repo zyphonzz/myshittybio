@@ -184,7 +184,7 @@
         <div class="field"><input id="user" name="user" placeholder="Username" autocomplete="username"></div>
         <div class="field"><input id="pass" name="pass" type="password" placeholder="Passphrase" autocomplete="current-password"></div>
         <button class="btn" type="submit">Submit</button>
-        <div class="helptext">if ur reading this ur pretty awesome ♡ </div>
+        <div class="helptext">Progressive zoom+blur → Blonde profile.</div>
       </form>
     </div>
   </section>
@@ -195,11 +195,11 @@
     <div class="profile-wrap">
       <div class="avatar" aria-hidden="true"></div>
       <div>
-        <div class="pf-title">LUNA</div>
+        <div class="pf-title">Luna</div>
         <div class="pf-sub">transgender · she/her</div>
         <div class="row" style="margin-top:10px">
-          <span class="badge">“TAKEN BY ZOEYY!!!! ♡ ♡ ♡”</span>
-          <span class="badge">i love you frank ocean ♡</span>
+          <span class="badge">“Blonde is my requiem.”</span>
+          <span class="badge">I love you Frank Ocean ♡</span>
         </div>
       </div>
 
@@ -224,17 +224,15 @@
       </div>
     </div>
   </section>
-
-  <!-- Hidden audio element. IMPORTANT: replace src with a file you own / have rights to stream. -->
-  <audio id="audio" preload="metadata">
-    <!--
-      ⚠️ Add a legal audio source you control, e.g.:
-      <source src="/media/white-ferrari.mp3" type="audio/mpeg" />
-      Or embed a YouTube link via <iframe> if preferred.
-    -->
+  <!-- Hidden audio element. Two source paths tried automatically. Put the file in either /media or ./media next to index.html. -->
+  <audio id="audio" preload="metadata" crossorigin="anonymous">
+    <source src="/media/white-ferrari.mp3" type="audio/mpeg" />
+    <source src="media/white-ferrari.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
   </audio>
 
-  <div class="credit">made with ♡ by luna</div>
+
+  <div class="credit">Made for Luna · iOS‑style glass animation demo</div>
 
   <script>
     // ---------- Login transition: iOS‑style zoom+progressive blur + crossfade ----------
@@ -303,10 +301,17 @@
       const s = Math.floor(t%60).toString().padStart(2,'0');
       return `${m}:${s}`;
     }
+    // Auto-detect duration once metadata is available; show helpful error message if the file can't be loaded.
+    const msg = (t) => { dur.textContent = t; dur.style.color = '#ffb4b4'; };
 
-    // If a legal file is placed at /media/white-ferrari.mp3 this will start working automatically.
-    // You can also assign at runtime:
-    // audio.src = 'PATH_TO_YOUR_OWN_FILE.mp3';
+    audio.addEventListener('error', () => {
+      const code = (audio.error && audio.error.code) || 0;
+      if (code === 4) {
+        msg('Audio not found / unsupported. Check file path & MIME type.');
+      } else {
+        msg('Audio failed to load.');
+      }
+    });
 
     playBtn.addEventListener('click', async () => {
       try{
